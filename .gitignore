@@ -205,3 +205,13 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+charm
+pbc-0.5.14
+phases
+du_attr.py
+test
+test.py
+*_encrypted
+*_decrypted*
+.DS_Store

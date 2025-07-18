@@ -1,0 +1,97 @@
+**Electronic Health Record (EHR)**
+**Patient Information**
+
+* **Patient ID:** P-208431
+* **Name:** Sarah L. Thompson
+* **Date of Birth:** 1985-11-12
+* **Gender:** Female
+* **Blood Type:** A+
+* **Marital Status:** Married
+* **Phone:** (555) 203-1875
+* **Email:** [sarah.thompson@example.com](mailto:sarah.thompson@example.com)
+* **Address:** 2147 Maple Ridge Ln, Denver, CO 80205
+
+---
+
+**Medical History**
+
+* **Chronic Conditions:**
+
+  * Type 2 Diabetes (diagnosed 2016)
+  * Hypertension (diagnosed 2019)
+* **Allergies:**
+
+  * Penicillin (rash and hives)
+* **Surgical History:**
+
+  * Appendectomy (2003)
+* **Family History:**
+
+  * Mother: Type 2 Diabetes
+  * Father: Hypertension, Coronary Artery Disease
+
+---
+
+**Medications**
+
+* Metformin 500mg, twice daily
+* Lisinopril 10mg, once daily
+* Atorvastatin 20mg, once daily
+
+---
+
+**Vital Signs (Last Visit: 2025-05-18)**
+
+* Height: 5'6" (167.6 cm)
+* Weight: 174 lbs (78.9 kg)
+* BMI: 28.1 (Overweight)
+* Blood Pressure: 138/85 mmHg
+* Heart Rate: 78 bpm
+* Temperature: 98.4°F (36.9°C)
+
+---
+
+**Recent Lab Results (2025-05-16)**
+
+* **HbA1c:** 7.2% (slightly elevated)
+* **Total Cholesterol:** 210 mg/dL
+* **HDL:** 48 mg/dL
+* **LDL:** 130 mg/dL
+* **Triglycerides:** 165 mg/dL
+* **Fasting Glucose:** 142 mg/dL
+
+---
+
+**Recent Visit Notes**
+
+* **Visit Date:** 2025-05-18
+* **Provider:** Dr. Amanda Reyes, MD
+* **Reason for Visit:** Routine follow-up for diabetes and blood pressure management
+* **Assessment:**
+
+  * Blood pressure moderately elevated; continue current medications
+  * HbA1c slightly elevated; discussed dietary adjustments
+* **Plan:**
+
+  * Encourage low-carb diet and regular exercise
+  * Follow-up in 3 months
+  * Referral to nutritionist
+
+---
+
+**Immunizations**
+
+* Influenza Vaccine: 2024-10-05
+* COVID-19 Booster: 2025-03-12
+* Tetanus (Tdap): 2023-07-08
+
+---
+
+**Insurance Information**
+
+* **Provider:** Blue Cross Blue Shield
+* **Plan:** PPO Silver
+* **Member ID:** BCBS-57842921
+
+
+keywords: ['A+', 'Married', 'Type 2 Diabetes', 'Diabetes', 'Hypertension', 'Chronic Conditions', 'Coronary Artery Disease']
