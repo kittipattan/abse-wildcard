@@ -1,21 +1,7 @@
 from typing import Callable, Any
 from charm.toolbox.pairinggroup import PairingGroup, G1, G2, GT, ZR
-import hmac
-import hashlib
-import os
-import random
-import time
-
-def measure_computation_time(fn: Callable[..., Any], *args, iterations: int = 10000) -> None:
-    total_time = 0.0
-    for _ in range(iterations):
-        start_time = time.time()
-        fn(*args)
-        end_time = time.time()
-        total_time += (end_time - start_time)
-    avg_time_ms = total_time / iterations * 1000
-    print(f"    Average time over {iterations} iterations: {avg_time_ms} ms")
-
+from utils.misc import measure_computation_time
+import hmac, hashlib, os, random, time
 
 if __name__ == "__main__":
     group = PairingGroup('SS512')   # supersingular elliptic curve / Type-A / symmetric

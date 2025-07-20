@@ -2,7 +2,7 @@ from entities.trusted_authority import TrustedAuthority
 from entities.data_user import DataUser
 from entities.data_owner import DataOwner
 from entities.cloud_server import CloudServer
-from utils.misc import print_header
+from utils.misc import print_header, measure_computation_time
 
 TA = TrustedAuthority()
 DO = DataOwner(TA.master_public_key, TA.group)
@@ -25,8 +25,13 @@ DO.pseudo_key = TA.pseudo_key
 
 # Phase 3: Encryption and Index Generation =============================
 print_header("PHASE 3", 50)
-    # Need to convert into pseudo-attributes and pseudo-policy before encrypt with CP-ABE
-    # TODO
+
+measure_computation_time(DO.encrypt_ehr, 'test_ehr_1.txt', ['diabetes', 'hypertension', 'chronic_conditions'], '((doctor))', iterations=1000)
+measure_computation_time(DO.encrypt_ehr, 'test_ehr_1.txt', ['diabetes', 'hypertension', 'chronic_conditions'], '((doctor or (researcher and neurology)))', iterations=1000)
+measure_computation_time(DO.encrypt_ehr, 'test_ehr_1.txt', ['diabetes', 'hypertension', 'chronic_conditions'], '((doctor or (researcher and neurology and biology)))', iterations=1000)
+
+exit()
+
 cts = [
     DO.encrypt_ehr('test_ehr_1.txt', ['diabetes', 'hypertension', 'chronic_conditions'], '((doctor or researcher))'), 
     DO.encrypt_ehr('test_ehr_2.txt', ['diabetes', 'coronary_artery_disease'], '((researcher and biology))')
