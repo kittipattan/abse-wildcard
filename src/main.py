@@ -57,6 +57,8 @@ wildcard_queries = ["dia*", "chro?"]
 
 # Query
 queries = DUs[0].query(wildcard_queries)
+measure_computation_time(queries = DUs[0].query(wildcard_queries))
+
 # Search
 enc_file_names = CS.proceed_queries(queries, DUs[0].attribute_cert)
 
