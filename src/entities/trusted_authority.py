@@ -101,10 +101,10 @@ class TrustedAuthority():
 
     def send_secretkey_and_cert(self, dus: List[DataUser]):
         for du in dus:
-            du.secret_key = self.__gen_sk(du.attributes)    # Assumed to send secret keys via secure channel
+            du.secret_key = self.gen_sk(du.attributes)    # Assumed to send secret keys via secure channel
             du.attribute_cert = self.__gen_attr_certs(du.attributes)
 
-    def __gen_sk(self, du_attr: List[str]):
+    def gen_sk(self, du_attr: List[str]):
         secret_key = self.__cpabe.keygen(self.master_public_key, self.__master_secret_key, du_attr)
         return secret_key
 

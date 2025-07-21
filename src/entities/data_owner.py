@@ -48,7 +48,7 @@ class DataOwner():
     #         cts.append(ct)
     #     return cts
     
-    def encrypt_ehr(self, filename: str, keywords: List, access_policy: str) -> Tuple[str, List]:
+    def encrypt_ehr(self, filename: str, access_policy: str) -> Tuple[str, List]:
         number = filename.split('.')[0].split('_')[-1]
         plain_file_path = base_path / filename
         with open(plain_file_path, 'rb') as plain_file:
