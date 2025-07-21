@@ -70,6 +70,8 @@ wildcard_queries = ["diabetes", "hypertension"] # Modify keywords to query here
 
 # Query
 queries = DUs[0].query(wildcard_queries)
+measure_computation_time(queries = DUs[0].query(wildcard_queries))
+
 # Search
 print("Search:")
 measure_computation_time(CS.proceed_queries, queries, DUs[0].attribute_cert, iterations=1000)
