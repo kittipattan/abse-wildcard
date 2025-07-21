@@ -29,9 +29,9 @@ DO.pseudo_key = TA.pseudo_key
 # Phase 3: Encryption and Index Generation =============================
 print_header("PHASE 3", 50)
 print("Encrypt:")
-measure_computation_time(DO.encrypt_ehr, 'test_ehr_1.txt', ['diabetes', 'hypertension', 'chronic_conditions'], '((doctor))', iterations=1000)
-measure_computation_time(DO.encrypt_ehr, 'test_ehr_1.txt', ['diabetes', 'hypertension', 'chronic_conditions'], '((doctor or (researcher and neurology)))', iterations=1000)
-measure_computation_time(DO.encrypt_ehr, 'test_ehr_1.txt', ['diabetes', 'hypertension', 'chronic_conditions'], '((doctor or (researcher and neurology and biology)))', iterations=1000)
+measure_computation_time(DO.encrypt_ehr, 'test_ehr_1.txt',  '((doctor))', iterations=1000)
+measure_computation_time(DO.encrypt_ehr, 'test_ehr_1.txt', '((doctor or (researcher and neurology)))', iterations=1000)
+measure_computation_time(DO.encrypt_ehr, 'test_ehr_1.txt', '((doctor or (researcher and neurology and biology)))', iterations=1000)
 
 # cts = [
 #     DO.encrypt_ehr('test_ehr_1.txt', ['diabetes', 'hypertension', 'chronic_conditions'], '((doctor or researcher))'), 
