@@ -70,7 +70,9 @@ wildcard_queries = ["diabetes", "hypertension"] # Modify keywords to query here
 
 # Query
 queries = DUs[0].query(wildcard_queries)
-measure_computation_time(queries = DUs[0].query(wildcard_queries))
+
+print("Trapdoor:")
+measure_computation_time(DUs[0].query, wildcard_queries, iterations=1000)
 
 # Search
 print("Search:")
