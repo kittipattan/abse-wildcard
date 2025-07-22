@@ -52,7 +52,7 @@ kwfile_map = [
     ('diabetes', cts[0][0]),
     ('hypertension', cts[0][0]),
     ('chronic_conditions', cts[0][0]),
-    ('coronary_artery_disease', cts[1][0])
+    ('coronary_artery_disease', cts[1][0]),
     ('keyword_5', cts[1][0]),
     ('keyword_6', cts[1][0]),
     ('keyword_7', cts[1][0])
