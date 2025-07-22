@@ -37,6 +37,7 @@ source .venv/bin/activate
 
 ```bash
 uv pip install -r requirement.txt
+uv pip install mmh3
 ```
 
 ### Install PBC 0.5.14
