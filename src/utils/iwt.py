@@ -307,7 +307,7 @@ class IndexWildcardTree:
         """Helper method to collect only file references from wildcard matches."""
         if pattern_idx == len(pattern):
             if node.is_end_of_word:
-                print(f"\nCS found {node.file_references}")
+                # print(f"\nCS found {node.file_references}")
                 final_ref = self.__check_policy(node.file_references, pseudo_attributes)
                 files.update(final_ref)
             return

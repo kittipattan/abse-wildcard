@@ -102,8 +102,8 @@ class DataUser():
         for i, q in enumerate(queries):
             td = self.__gen_trapdoor(q.encode())
             trapdoors.append(td)
-            print(f"\tquery {i}: {q}")
-            print(f"\t\ttrapdoor: {td[0]}")   # only print first character
+            # print(f"\tquery {i}: {q}")
+            # print(f"\t\ttrapdoor: {td[0]}")   # only print first character
         return trapdoors
 
     def __gen_trapdoor(self, keyword: bytes) -> List[str]:

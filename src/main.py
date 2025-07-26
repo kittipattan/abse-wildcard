@@ -88,5 +88,5 @@ measure_computation_time(DUs[0].decrypt_ehrs, enc_file_names, iterations=1000)
 filepaths = DUs[0].decrypt_ehrs(enc_file_names)
 # print("\nDecryption successful")
 # print("\tFiles located at:")
-for fp in filepaths:
-    print(f"\t\t{fp}")
+# for fp in filepaths:
+#     print(f"\t\t{fp}")
