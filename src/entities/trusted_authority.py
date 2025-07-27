@@ -17,7 +17,7 @@ du0 = {
     "organization": "HOSPITAL_A",
     "clearance": "NONE",
     "shift": "DAY",
-    "global": "GLOBAL"
+    "global": "0"
 }
 
 du1 = {
@@ -27,7 +27,7 @@ du1 = {
     "organization": "HOSTPITAL_B",
     "clearance": "NONE",
     "shift": "NIGHT",
-    "global": "GLOBAL"
+    "global": "0"
 }
 
 du2 = {
@@ -37,7 +37,7 @@ du2 = {
     "organization": "UNIVERSITY",
     "clearance": "MEDIUM",
     "shift": "NONE",
-    "global": "GLOBAL"
+    "global": "0"
 }
 
 du3 = {
@@ -47,7 +47,7 @@ du3 = {
     "organization": "HOSPITAL_A",
     "clearance": "HIGH",
     "shift": "NONE",
-    "global": "GLOBAL"
+    "global": "0"
 }
 
 du4 = {
@@ -57,7 +57,7 @@ du4 = {
     "organization": "HOSPITAL_C",
     "clearance": "MEDIUM",
     "shift": "DAY",
-    "global": "GLOBAL"
+    "global": "0"
 }
 
 class TrustedAuthority():

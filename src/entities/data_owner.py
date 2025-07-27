@@ -116,7 +116,7 @@ class DataOwner():
         return mac
     
     def send_enc_trapdoor_key(self, dus: List[DataUser]):
-        enc_trapdoor_key = self.__cpabe.encrypt(self.ta_mpk, self.__trapdoor_key_cpabe, '(global)')
+        enc_trapdoor_key = self.__cpabe.encrypt(self.ta_mpk, self.__trapdoor_key_cpabe, '(0)')
         for du in dus:
             du.recv_enc_trapdoor_key(enc_trapdoor_key)
 
