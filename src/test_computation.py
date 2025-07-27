@@ -30,8 +30,8 @@ if __name__ == "__main__":
     message = random.randbytes(100)
 
     mac = HomomorphicMAC(group, group.random(ZR))
-    print("MAC:")
-    for count in [1,2,3,4,5,6,7,8,9,10]:
+    print("HomoMAC:")
+    for count in [10,20,30,40]:
         tags, hashes = test_homomac(mac, group, count)
         print(f"{count} tags", end="\t")
         measure_computation_time(test_homomac_time, mac, tags, hashes, iterations=5000)
@@ -55,8 +55,8 @@ if __name__ == "__main__":
     print("Bilinear pairing: ")
     measure_computation_time(lambda: group.pair_prod(g0, g0), iterations=10000)
 
-    print("Hash function to group elements:")
-    measure_computation_time(lambda: group.hash('keyword', G1), iterations=1000)
+    # print("Hash function to group elements:")
+    # measure_computation_time(lambda: group.hash('keyword', G1), iterations=1000)
 
     print("HMAC:")
     measure_computation_time(lambda: hmac.new(key, message, hashlib.sha256).digest(), iterations=10000)

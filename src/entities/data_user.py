@@ -7,7 +7,7 @@ from charm.schemes.abenc.abenc_bsw07 import CPabe_BSW07
 import hashlib, hmac
 
 class DataUser():
-    def __init__(self, attributes: Dict[str, str], ta_mpk, group, id: int):
+    def __init__(self, attributes: Dict[str, str], ta_mpk, group, id: int = 0):
         self.__attributes = attributes
         self.ta_mpk = ta_mpk
         self.__group = group
