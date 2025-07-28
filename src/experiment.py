@@ -46,12 +46,12 @@ Wildcard percentage:\t{wildcard_percentage}
     # Phase 2: Key Generation ==============================================
     TA.send_secretkey_and_cert([DU_test])
     print("KeyGen:")
-    # measure_computation_time(TA.gen_sk, DU_test.attributes, iterations=1000)
+    measure_computation_time(TA.gen_sk, DU_test.attributes, iterations=100)
     DO.pseudo_key = TA.pseudo_key
 
     # Phase 3: Encryption and Index Generation =============================
     print("Encrypt:")
-    # measure_computation_time(DO.encrypt_ehr, 'test_ehr_1.txt', ACCESS_POLICY, iterations=1000)
+    measure_computation_time(DO.encrypt_ehr, 'test_ehr_1.txt', ACCESS_POLICY, iterations=100)
 
     ct_ref, idx = DO.encrypt_ehr('test_ehr_1.txt', ACCESS_POLICY)
 
@@ -80,7 +80,7 @@ Wildcard percentage:\t{wildcard_percentage}
     wildcard_queries = [random.choice(keywords) if wildcard_percentage <= 0
                         else wildcard_suffix(random.choice(keywords), wildcard_percentage) 
                         for _ in range(query_count)]
-    print(wildcard_queries)
+    # print(wildcard_queries)
 
     # Query
     queries = DU_test.query(wildcard_queries)
