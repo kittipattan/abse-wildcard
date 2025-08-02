@@ -16,7 +16,8 @@ def wildcard_suffix(keyword: str, percentage: int) -> str:
     return keyword[:cut_off] + "*"
 
 def run_scheme(round_num, attribute_count, keyword_length, 
-               keyword_in_tree_count, query_count, wildcard_percentage):
+               keyword_in_tree_count, query_count, wildcard_percentage,
+               file_count):
     
     print_header(f"ROUND {round_num}", 40)
 
@@ -26,6 +27,7 @@ Keyword length:\t\t{keyword_length}
 Keyword count in IWT:\t{keyword_in_tree_count}
 Query count:\t\t{query_count}
 Wildcard percentage:\t{wildcard_percentage}
+Ciphertext file count:\t{file_count}
           ''')
     
     # random keywords
@@ -37,8 +39,8 @@ Wildcard percentage:\t{wildcard_percentage}
     ACCESS_POLICY = '((' + ' or '.join(attributes.values()) + '))'
 
     TA = TrustedAuthority()
-    DO = DataOwner(TA.master_public_key, TA.group)
-    DU_test = DataUser(attributes, TA.master_public_key, TA.group)
+    DO = DataOwner(TA.master_public_key, TA.group, True)
+    DU_test = DataUser(attributes, TA.master_public_key, TA.group, is_experiment=True)
 
     # Phase 1: Setup Phase =================================================
     TA.send_publicparams([DU_test, DO])
@@ -46,15 +48,18 @@ Wildcard percentage:\t{wildcard_percentage}
     # Phase 2: Key Generation ==============================================
     TA.send_secretkey_and_cert([DU_test])
     print("KeyGen:")
-    measure_computation_time(TA.gen_sk, DU_test.attributes, iterations=100)
+    # measure_computation_time(TA.gen_sk, DU_test.attributes, iterations=100)
     DO.pseudo_key = TA.pseudo_key
 
     # Phase 3: Encryption and Index Generation =============================
     print("Encrypt:")
-    measure_computation_time(DO.encrypt_ehr, 'test_ehr_1.txt', ACCESS_POLICY, iterations=100)
+    # measure_computation_time(DO.encrypt_ehr, 'test_ehr_1.txt', ACCESS_POLICY, iterations=100)
 
-    ct_ref, idx = DO.encrypt_ehr('test_ehr_1.txt', ACCESS_POLICY)
+    # ct_ref, idx = DO.encrypt_ehr('test_ehr_1.txt', ACCESS_POLICY)
 
+    ct_refs = [DO.encrypt_ehr(f'test_ehr_{i}.txt', ACCESS_POLICY)[0]
+               for i in range(1, file_count+1)]
+    
     # Phase 4: Trapdoor Generation and Query ===============================
 
     # kwfile_map = [
@@ -70,11 +75,11 @@ Wildcard percentage:\t{wildcard_percentage}
     #     ('keyword_10', ct_ref)
     # ]
 
-    kwfile_map =[(keyword, ct_ref) for keyword in keywords]
+    kwfile_map =[(keyword, ct_ref) for keyword in keywords for ct_ref in ct_refs]
 
     DO.construct_iwt(kwfile_map)    
     DO.send_enc_trapdoor_key([DU_test])  
-    CS = CloudServer(DO.iwt, TA.public_key)        
+    CS = CloudServer(DO.iwt, TA.public_key)    
 
     # randomly choose keyword to query
     wildcard_queries = [random.choice(keywords) if wildcard_percentage <= 0
@@ -86,7 +91,7 @@ Wildcard percentage:\t{wildcard_percentage}
     queries = DU_test.query(wildcard_queries)
 
     print("Trapdoor:")
-    measure_computation_time(DU_test.query, wildcard_queries, iterations=1000)
+    # measure_computation_time(DU_test.query, wildcard_queries, iterations=1000)
 
     # Search
     print("Search:")
@@ -96,7 +101,7 @@ Wildcard percentage:\t{wildcard_percentage}
 
     # Decrypt
     print("Decrypt:")
-    measure_computation_time(DU_test.decrypt_ehrs, enc_file_names, iterations=1000)
+    # measure_computation_time(DU_test.decrypt_ehrs, enc_file_names, iterations=1000)
 
     filepaths = DU_test.decrypt_ehrs(enc_file_names)
     
@@ -106,42 +111,65 @@ if __name__ == "__main__":
     ATTRIBUTE_COUNTS = [5, 10, 25, 50]  # attributes
     KEYWORD_LENGTHS = [8, 16, 32, 64]   # characters
     KEYWORD_IN_TREE_COUNTS = [5, 10, 15, 20]    # keywords
-    QUERY_COUNTS = [1, 2, 3, 4]         # queries
+    QUERY_COUNTS = [1, 3, 5, 7, 9]         # queries
     WILDCARD_PERCENTAGES = [10, 20, 30] # percent
+    FILE_COUNTS = [5, 10, 20, 40]
 
     to_run_test = {
-        "attribute_counts": 1,
+        "attribute_counts": 0,
         "keyword_lengths": 0,
         "keyword_in_tree_counts": 0,
         "query_counts": 0,
-        "wildcard_percentages": 0
+        "wildcard_percentages": 0,
+        "file_counts": 1
     }
 
     # Attribute counts dependent
     if (to_run_test["attribute_counts"]):
         print_header("ATTRIBUTE COUNTS", 40)
         for i, attribute_count in enumerate(ATTRIBUTE_COUNTS):
-            run_scheme(i, attribute_count, 16, 5, 1, 0)
+            run_scheme(i, attribute_count, 16, 5, 1, 0, 1)
 
     # Keyword lengths dependent
     if (to_run_test["keyword_lengths"]):
         print_header("KEYWORD LENGTHS", 40)
         for i, keyword_len in enumerate(KEYWORD_LENGTHS):
-            run_scheme(i, 10, keyword_len, 5, 1, 0)
+            run_scheme(i, 10, keyword_len, 5, 1, 0, 1)
 
     # Keyword counts in IWT dependent
     if (to_run_test["keyword_in_tree_counts"]):
         print_header("KEYWORDS IN IWT", 40)
         for i, keyword_in_tree_count in enumerate(KEYWORD_IN_TREE_COUNTS):
-            run_scheme(i, 10, 16, keyword_in_tree_count, 1, 0)
+            run_scheme(i, 10, 16, keyword_in_tree_count, 1, 0, 1)
 
     # Query counts dependent
     if (to_run_test["query_counts"]):
         print_header("QUERIES", 40)
         for i, query_count in enumerate(QUERY_COUNTS):
-            run_scheme(i, 10, 16, 5, query_count, 0)
+            run_scheme(i, 10, 16, 5, query_count, 0, 1)
 
+    # Wildcard amount dependent
     if (to_run_test["wildcard_percentages"]):
         print_header("WILDCARD PERCENTAGES", 40)
         for i, wildcard_percent in enumerate(WILDCARD_PERCENTAGES):
-            run_scheme(i, 10, 16, 5, 1, wildcard_percent)
+            run_scheme(i, 10, 16, 5, 1, wildcard_percent, 1)
+            run_scheme(round_num=i, 
+                       attribute_count=10, 
+                       keyword_length=16, 
+                       keyword_in_tree_count=5, 
+                       query_count=1, 
+                       wildcard_percentage=wildcard_percent, 
+                       file_count=1)
+
+    # File counts dependent
+    if (to_run_test["file_counts"]):
+        print_header("FILE_COUNTS", 40)
+        for i, file_count in enumerate(FILE_COUNTS):
+            run_scheme(round_num=i, 
+                       attribute_count=1, 
+                       keyword_length=16, 
+                       keyword_in_tree_count=5, 
+                       query_count=1, 
+                       wildcard_percentage=0, 
+                       file_count=file_count)
+            

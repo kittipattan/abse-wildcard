@@ -1,12 +1,6 @@
 from typing import Set, List, Optional, Dict, Tuple
 from collections import defaultdict
 from utils.bloom import BloomFilter
-from utils.misc import base_path
-from utils.serialize import deserialize_ctkmac
-import msgpack
-from cryptography.hazmat.primitives.asymmetric import ec
-from cryptography.hazmat.primitives import hashes
-from charm.toolbox.policytree import PolicyParser
 
 # BY CLAUDE AI
 class TrieNode:
@@ -275,78 +269,46 @@ class IndexWildcardTree:
     
     # MAIN ONE
     def wildcard_files_only(self, 
-                            pattern: List[str], 
-                            attribute_cert: Tuple[List[str], bytes], 
-                            ta_pubkey) -> Set[str]:
+                            pattern: List[str]):
         """
         Get only the files that contain words matching the wildcard pattern.
         More efficient when you only need file references, not the actual words.
         """
         if not pattern:
             return set()
-        
-        # Verify signature of attribute cert
-        pseudo_attributes = self.__verify_cert(attribute_cert, ta_pubkey)
-        if not pseudo_attributes:
-            raise Exception("Invalid certificate signature")
             
         files = set()
-        self._wildcard_files_helper(self.root, pattern, 0, files, pseudo_attributes)
+        self._wildcard_files_helper(self.root, pattern, 0, files)
         return files
     
-    def __verify_cert(self, attribute_cert: Tuple[List[str], bytes], ta_pubkey) -> List[str] | False:
-        pseudo_attributes, signature = attribute_cert
-        try:
-            ta_pubkey.verify(signature, msgpack.dumps(pseudo_attributes), ec.ECDSA(hashes.SHA256()))
-            return pseudo_attributes
-        except:
-            return False
-    
     def _wildcard_files_helper(self, node: TrieNode, pattern: List[str], pattern_idx: int, 
-                              files: Set[str], pseudo_attributes: List[str]):
+                              files: Set[str]):
         """Helper method to collect only file references from wildcard matches."""
         if pattern_idx == len(pattern):
             if node.is_end_of_word:
                 # print(f"\nCS found {node.file_references}")
-                final_ref = self.__check_policy(node.file_references, pseudo_attributes)
-                files.update(final_ref)
+                files.update(node.file_references)
             return
         
         char = pattern[pattern_idx]
         
         if char == '*':
             # '*' can match zero characters
-            self._wildcard_files_helper(node, pattern, pattern_idx + 1, files, pseudo_attributes)
+            self._wildcard_files_helper(node, pattern, pattern_idx + 1, files)
             
             # '*' can match one or more characters
             for child_node in node.children.values():
-                self._wildcard_files_helper(child_node, pattern, pattern_idx, files, pseudo_attributes)
+                self._wildcard_files_helper(child_node, pattern, pattern_idx, files)
         
         elif char == '?':
             # '?' matches exactly one character
             for child_node in node.children.values():
-                self._wildcard_files_helper(child_node, pattern, pattern_idx + 1, files, pseudo_attributes)
+                self._wildcard_files_helper(child_node, pattern, pattern_idx + 1, files)
         
         else:
             # Regular character matching
             if char in node.children:
-                self._wildcard_files_helper(node.children[char], pattern, pattern_idx + 1, files, pseudo_attributes)
-
-    def __check_policy(self, file_references: Set[str], pseudo_attributes: List[str]):
-        final_ref = set()
-        parser = PolicyParser()
-        for fileref in file_references:
-            # deserialize encrypted file
-            enc_file_path = base_path / fileref
-            with open(enc_file_path, 'rb') as enc_file:
-                ctkmac_bytes = enc_file.read()
-
-            _, __, pseudo_policy = deserialize_ctkmac(ctkmac_bytes)
-            policy_tree = parser.parse(pseudo_policy)
-            if parser.prune(policy_tree, pseudo_attributes):
-                final_ref.add(fileref)
-
-        return final_ref
+                self._wildcard_files_helper(node.children[char], pattern, pattern_idx + 1, files)
 
 # Example usage and testing
 if __name__ == "__main__":

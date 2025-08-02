@@ -7,7 +7,7 @@ from charm.schemes.abenc.abenc_bsw07 import CPabe_BSW07
 import hashlib, hmac
 
 class DataUser():
-    def __init__(self, attributes: Dict[str, str], ta_mpk, group, id: int = 0):
+    def __init__(self, attributes: Dict[str, str], ta_mpk, group, id: int = 0, is_experiment: bool = False):
         self.__attributes = attributes
         self.ta_mpk = ta_mpk
         self.__group = group
@@ -17,6 +17,7 @@ class DataUser():
         self.__cpabe = CPabe_BSW07(self.__group)
         self.__trapdoor_key = None
         self.attribute_cert = None
+        self.is_experiment = is_experiment
         
     @property
     def attributes(self):
@@ -73,8 +74,10 @@ class DataUser():
             raise Exception(f"DU{self.id} decrypt_ehr: decrypt unsuccessful")
         
         decrypted_file_path = base_path / f"{number}_decrypted.txt"
-        with open(decrypted_file_path, 'wb') as dec_file:
-            dec_file.write(message)
+
+        if not self.is_experiment:
+            with open(decrypted_file_path, 'wb') as dec_file:
+                dec_file.write(message)
 
         return decrypted_file_path
 
@@ -117,3 +120,4 @@ class DataUser():
             trapdoor.append(td)
 
         return trapdoor
+    

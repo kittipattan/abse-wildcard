@@ -10,12 +10,12 @@ from charm.toolbox.pairinggroup import ZR
 from typing import List, Tuple, Any
 import hashlib, hmac
 from .data_user import DataUser
-import pprint, os
+import pprint, os, pathlib
 
 global_keywords = ['A+', 'Married', 'Type 2 Diabetes', 'Diabetes', 'Hypertension', 'Chronic Conditions', 'Coronary Artery Disease']
 
 class DataOwner():
-    def __init__(self, ta_mpk, group):
+    def __init__(self, ta_mpk, group, is_experiment: bool = False):
         self.ta_mpk = ta_mpk    # MPK from TA
         self.__group = group
         self.public_params = {}
@@ -24,6 +24,7 @@ class DataOwner():
         self.__trapdoor_key_cpabe = self.__group.random(GT)  # To be encrypted using CP-ABE
         self.__trapdoor_key = hashlib.sha256(self.__group.serialize(self.__trapdoor_key_cpabe)).digest() # K_td
         self.__pseudo_key = None
+        self.is_experiment = is_experiment
 
     @property
     def cpabe(self):
@@ -51,8 +52,13 @@ class DataOwner():
     def encrypt_ehr(self, filename: str, access_policy: str) -> Tuple[str, List]:
         number = filename.split('.')[0].split('_')[-1]
         plain_file_path = base_path / filename
-        with open(plain_file_path, 'rb') as plain_file:
-            message = plain_file.read()
+        
+        if self.is_experiment:
+            with open(base_path / "test_ehr_1.txt", 'rb') as plain_file:
+                message = plain_file.read()
+        else:
+            with open(plain_file_path, 'rb') as plain_file:
+                message = plain_file.read()
             
         # Randonly select a secret
         s = self.__group.random(ZR)
@@ -134,9 +140,4 @@ class DataOwner():
             td = hmac.new(self.__trapdoor_key, keyword[0:i], hashlib.sha256).hexdigest()
             trapdoor.append(td)
         return trapdoor
-
-    def gen_pseudo_attr(self, attribute: str):
-        pass
-
-    def gen_pseudo_policy(self, attributes: str):
-        pass
+    
