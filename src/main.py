@@ -40,8 +40,8 @@ print("Encrypt:")
 
 # Add more files to encrypt and their access policies here
 cts = [
-    DO.encrypt_ehr('test_ehr_1.txt', '((doctor or researcher))')[0], 
-    DO.encrypt_ehr('test_ehr_2.txt', '((doctor or (researcher and biology)))')[0]
+    DO.encrypt_ehr('test_ehr_1.txt', '(doctor or researcher)')[0], 
+    DO.encrypt_ehr('test_ehr_2.txt', '(doctor or (researcher and biology))')[0]
 ] # return [(ct_ref, idk), ...]
 
 # Phase 4: Trapdoor Generation and Query ===============================

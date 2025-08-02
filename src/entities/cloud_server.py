@@ -1,10 +1,9 @@
 from typing import List, Set, Dict, Tuple
 from utils.iwt import IndexWildcardTree
-from charm.toolbox.policytree import PolicyParser
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives import hashes
 from utils.serialize import deserialize_ctkmac
-from utils.misc import base_path
+from utils.misc import base_path, eval_policy
 import pprint, msgpack
 
 class CloudServer():
@@ -28,6 +27,11 @@ class CloudServer():
         return files
     
     def proceed_queries(self, queries: List[List[str]], attribute_cert: Tuple[List[str], bytes]) -> Set[str]:
+        # Verify signature of attribute cert
+        pseudo_attributes = self.__verify_cert(attribute_cert, self.ta_publickey)
+        if not pseudo_attributes:
+            raise Exception("Invalid certificate signature")
+        
         files = set()
         for query in queries:
             if files:
@@ -35,13 +39,9 @@ class CloudServer():
             else:
                 files.update(self.wildcard_search(query))
 
-        # Verify signature of attribute cert
-        pseudo_attributes = self.__verify_cert(attribute_cert, self.ta_publickey)
-        if not pseudo_attributes:
-            raise Exception("Invalid certificate signature")
-
         # Check access policy
         final_ref = self.__check_policy(files, pseudo_attributes)
+        # final_ref = files
 
         return final_ref
     
@@ -55,7 +55,6 @@ class CloudServer():
     
     def __check_policy(self, file_references: Set[str], pseudo_attributes: List[str]):
         final_ref = set()
-        parser = PolicyParser()
         for fileref in file_references:
             # deserialize encrypted file
             enc_file_path = base_path / fileref
@@ -63,9 +62,8 @@ class CloudServer():
                 ctkmac_bytes = enc_file.read()
 
             _, __, pseudo_policy = deserialize_ctkmac(ctkmac_bytes)
-            policy_tree = parser.parse(pseudo_policy)
-            if parser.prune(policy_tree, pseudo_attributes):
+
+            if eval_policy(pseudo_policy, pseudo_attributes):
                 final_ref.add(fileref)
 
         return final_ref
-    

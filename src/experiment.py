@@ -36,7 +36,7 @@ Ciphertext file count:\t{file_count}
                         for _ in range(keyword_in_tree_count)] 
 
     attributes = {str(i): str(i) for i in range(attribute_count)}
-    ACCESS_POLICY = '((' + ' or '.join(attributes.values()) + '))'
+    ACCESS_POLICY = '(' + ' or '.join(attributes.values()) + ')'
 
     TA = TrustedAuthority()
     DO = DataOwner(TA.master_public_key, TA.group, True)
@@ -61,20 +61,6 @@ Ciphertext file count:\t{file_count}
                for i in range(1, file_count+1)]
     
     # Phase 4: Trapdoor Generation and Query ===============================
-
-    # kwfile_map = [
-    #     ('diabetes', ct_ref),
-    #     ('hypertension', ct_ref),
-    #     ('chronic_conditions', ct_ref),
-    #     ('coronary_artery_disease', ct_ref),
-    #     ('keyword_05', ct_ref),
-    #     ('keyword_06', ct_ref),
-    #     ('keyword_07', ct_ref),
-    #     ('keyword_08', ct_ref),
-    #     ('keyword_09', ct_ref),
-    #     ('keyword_10', ct_ref)
-    # ]
-
     kwfile_map =[(keyword, ct_ref) for keyword in keywords for ct_ref in ct_refs]
 
     DO.construct_iwt(kwfile_map)    
@@ -111,9 +97,9 @@ if __name__ == "__main__":
     ATTRIBUTE_COUNTS = [5, 10, 25, 50]  # attributes
     KEYWORD_LENGTHS = [8, 16, 32, 64]   # characters
     KEYWORD_IN_TREE_COUNTS = [5, 10, 15, 20]    # keywords
-    QUERY_COUNTS = [1, 3, 5, 7, 9]         # queries
-    WILDCARD_PERCENTAGES = [10, 20, 30] # percent
-    FILE_COUNTS = [5, 10, 20, 40]
+    QUERY_COUNTS = [1, 3, 5, 7, 9, 11]         # queries
+    WILDCARD_PERCENTAGES = [10, 20, 30, 40, 50] # percent
+    FILE_COUNTS = [1, 5, 10, 20, 40]
 
     to_run_test = {
         "attribute_counts": 0,
@@ -128,13 +114,13 @@ if __name__ == "__main__":
     if (to_run_test["attribute_counts"]):
         print_header("ATTRIBUTE COUNTS", 40)
         for i, attribute_count in enumerate(ATTRIBUTE_COUNTS):
-            run_scheme(i, attribute_count, 16, 5, 1, 0, 1)
+            run_scheme(i, attribute_count, 16, 10, 1, 0, 1)
 
     # Keyword lengths dependent
     if (to_run_test["keyword_lengths"]):
         print_header("KEYWORD LENGTHS", 40)
         for i, keyword_len in enumerate(KEYWORD_LENGTHS):
-            run_scheme(i, 10, keyword_len, 5, 1, 0, 1)
+            run_scheme(i, 10, keyword_len, 10, 1, 0, 1)
 
     # Keyword counts in IWT dependent
     if (to_run_test["keyword_in_tree_counts"]):
@@ -146,17 +132,16 @@ if __name__ == "__main__":
     if (to_run_test["query_counts"]):
         print_header("QUERIES", 40)
         for i, query_count in enumerate(QUERY_COUNTS):
-            run_scheme(i, 10, 16, 5, query_count, 0, 1)
+            run_scheme(i, 10, 16, 10, query_count, 0, 1)
 
     # Wildcard amount dependent
     if (to_run_test["wildcard_percentages"]):
         print_header("WILDCARD PERCENTAGES", 40)
         for i, wildcard_percent in enumerate(WILDCARD_PERCENTAGES):
-            run_scheme(i, 10, 16, 5, 1, wildcard_percent, 1)
             run_scheme(round_num=i, 
                        attribute_count=10, 
                        keyword_length=16, 
-                       keyword_in_tree_count=5, 
+                       keyword_in_tree_count=10, 
                        query_count=1, 
                        wildcard_percentage=wildcard_percent, 
                        file_count=1)
@@ -166,9 +151,9 @@ if __name__ == "__main__":
         print_header("FILE_COUNTS", 40)
         for i, file_count in enumerate(FILE_COUNTS):
             run_scheme(round_num=i, 
-                       attribute_count=1, 
+                       attribute_count=10, 
                        keyword_length=16, 
-                       keyword_in_tree_count=5, 
+                       keyword_in_tree_count=10, 
                        query_count=1, 
                        wildcard_percentage=0, 
                        file_count=file_count)
