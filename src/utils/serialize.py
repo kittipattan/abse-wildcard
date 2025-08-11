@@ -1,5 +1,5 @@
 import msgpack
-from typing import Tuple
+from typing import Tuple, List
 
 def serialize_ctk(encrypted_key_bytes, ciphertext, iv):
     ctk = {
@@ -28,3 +28,18 @@ def serialize_ctkmac(ctk_bytes: bytes, mac_bytes: bytes, pseudo_policy: str) -> 
 def deserialize_ctkmac(ctkmac_bytes: bytes) -> Tuple[bytes, bytes, str]:
     ctkmac = msgpack.unpackb(ctkmac_bytes)
     return (ctkmac["ctk"], ctkmac["mac"], ctkmac["pseudo_policy"])
+
+def serialize_cert(pseudo_attributes: List[str], signature: bytes) -> bytes:
+    return msgpack.packb({
+        "pseudo_attributes": pseudo_attributes,
+        "signature": signature
+    })
+
+def deserialize_cert(cert_bytes: bytes) -> dict[str, List[str] | bytes]:
+    return msgpack.unpackb(cert_bytes)
+
+# def serialize_enccert(package: dict[str, bytes]) -> bytes:
+#     return msgpack.packb(package)
+
+# def deserialize_enccert(package_bytes: bytes) -> dict[str, bytes]:
+#     return msgpack.unpackb(package_bytes)

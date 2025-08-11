@@ -39,6 +39,8 @@ Ciphertext file count:\t{file_count}
     ACCESS_POLICY = '(' + ' or '.join(attributes.values()) + ')'
 
     TA = TrustedAuthority()
+    CS = CloudServer(TA.public_key)
+    TA.cloud_publickey = CS.public_key
     DO = DataOwner(TA.master_public_key, TA.group, True)
     DU_test = DataUser(attributes, TA.master_public_key, TA.group, is_experiment=True)
 
@@ -65,7 +67,7 @@ Ciphertext file count:\t{file_count}
 
     DO.construct_iwt(kwfile_map)    
     DO.send_enc_trapdoor_key([DU_test])  
-    CS = CloudServer(DO.iwt, TA.public_key)    
+    CS.iwt = DO.iwt    
 
     # randomly choose keyword to query
     wildcard_queries = [random.choice(keywords) if wildcard_percentage <= 0
@@ -114,13 +116,13 @@ if __name__ == "__main__":
     if (to_run_test["attribute_counts"]):
         print_header("ATTRIBUTE COUNTS", 40)
         for i, attribute_count in enumerate(ATTRIBUTE_COUNTS):
-            run_scheme(i, attribute_count, 16, 10, 1, 0, 1)
+            run_scheme(i, attribute_count, 16, 20, 1, 0, 1)
 
     # Keyword lengths dependent
     if (to_run_test["keyword_lengths"]):
         print_header("KEYWORD LENGTHS", 40)
         for i, keyword_len in enumerate(KEYWORD_LENGTHS):
-            run_scheme(i, 10, keyword_len, 10, 1, 0, 1)
+            run_scheme(i, 10, keyword_len, 20, 1, 0, 1)
 
     # Keyword counts in IWT dependent
     if (to_run_test["keyword_in_tree_counts"]):
@@ -132,7 +134,7 @@ if __name__ == "__main__":
     if (to_run_test["query_counts"]):
         print_header("QUERIES", 40)
         for i, query_count in enumerate(QUERY_COUNTS):
-            run_scheme(i, 10, 16, 10, query_count, 0, 1)
+            run_scheme(i, 10, 16, 20, query_count, 0, 1)
 
     # Wildcard amount dependent
     if (to_run_test["wildcard_percentages"]):
@@ -141,7 +143,7 @@ if __name__ == "__main__":
             run_scheme(round_num=i, 
                        attribute_count=10, 
                        keyword_length=16, 
-                       keyword_in_tree_count=10, 
+                       keyword_in_tree_count=20, 
                        query_count=1, 
                        wildcard_percentage=wildcard_percent, 
                        file_count=1)
@@ -153,8 +155,7 @@ if __name__ == "__main__":
             run_scheme(round_num=i, 
                        attribute_count=10, 
                        keyword_length=16, 
-                       keyword_in_tree_count=10, 
+                       keyword_in_tree_count=20, 
                        query_count=1, 
                        wildcard_percentage=0, 
                        file_count=file_count)
-            

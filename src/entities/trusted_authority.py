@@ -3,6 +3,8 @@ from charm.schemes.abenc.abenc_bsw07 import CPabe_BSW07
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives import hashes
 from utils.mac import prf, gen_pseudo_attr
+from utils.crypto import ecc_encrypt
+from utils.serialize import serialize_cert
 from typing import List
 from .data_user import DataUser
 from .data_owner import  DataOwner
@@ -75,6 +77,7 @@ class TrustedAuthority():
         self.__pseudo_key = os.urandom(32)
         self.__private_key = ec.generate_private_key(ec.SECP384R1())
         self.public_key = self.__private_key.public_key()
+        self.cloud_publickey = None
 
     @property
     def pseudo_key(self):
@@ -113,8 +116,11 @@ class TrustedAuthority():
         for attr in du_attr:
             pseudo_attributes.append(gen_pseudo_attr(self.__pseudo_key, attr))
 
-        return (pseudo_attributes, 
-                self.__private_key.sign(msgpack.dumps(pseudo_attributes), ec.ECDSA(hashes.SHA256())))
+        # Encrypt attribute certificate
+        attribute_cert_bytes = serialize_cert(pseudo_attributes, self.__private_key.sign(msgpack.dumps(pseudo_attributes), ec.ECDSA(hashes.SHA256())))
+        enc_attribute_cert = ecc_encrypt(self.cloud_publickey, attribute_cert_bytes)
+
+        return enc_attribute_cert
 
     def test_serial(self):
         a = self.group.random(GT)
@@ -129,3 +135,4 @@ class TrustedAuthority():
         print('gt__key', self.group.random(ZR))
         
         return
+    
